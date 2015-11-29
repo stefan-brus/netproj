@@ -95,10 +95,7 @@ class ServerApp
 
     void run ( )
     {
-        while ( true )
-        {
-            this.fiber.call();
-        }
+        this.fiber.call();
     }
 
     /**
