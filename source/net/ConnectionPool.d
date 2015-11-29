@@ -127,4 +127,16 @@ class ConnectionPool
 
         return result;
     }
+
+    /**
+     * Get the number of available connections
+     *
+     * Returns:
+     *      The number connections in the pool
+     */
+
+    size_t length ( )
+    {
+        return this.pool.length;
+    }
 }

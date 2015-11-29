@@ -9,6 +9,8 @@ module net.ServerApp;
 
 import net.ConnectionPool;
 
+import util.fiber.IntervalEvent;
+
 import core.thread;
 
 import std.socket;
@@ -66,6 +68,12 @@ class ServerApp
     private ConnectionPool pool;
 
     /**
+     * The status printer interval event
+     */
+
+    private IntervalEvent print_status;
+
+    /**
      * Constructor
      *
      * Params:
@@ -78,6 +86,7 @@ class ServerApp
         this.config = config;
         this.fiber = new Fiber(&this.fiberRun);
         this.pool = new ConnectionPool(dg, this.config.max_conns);
+        this.print_status = new IntervalEvent(&this.printStatus, 1);
     }
 
     /**
@@ -104,6 +113,8 @@ class ServerApp
         server.listen(this.config.backlog);
         writefln("Listening on %s", server.localAddress());
 
+        this.print_status.start();
+
         while ( true )
         {
             auto client = server.accept();
@@ -122,7 +133,17 @@ class ServerApp
                 client.close();
             }
 
+            this.print_status.resume();
             this.pool.resume();
         }
+    }
+
+    /**
+     * Print the server status
+     */
+
+    private void printStatus ( )
+    {
+        writefln("Connections: %d busy, %d available, %d max", this.pool.busy, this.pool.length, this.config.max_conns);
     }
 }
