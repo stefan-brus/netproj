@@ -76,9 +76,8 @@ class ConnectionPool
             if ( !handler.busy() )
             {
                 handler.handle(socket);
+                handled = true;
             }
-
-            handled = true;
         }
 
         if ( !handled && (this.max_conns == 0 || this.pool.length < this.max_conns) )
