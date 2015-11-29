@@ -42,6 +42,7 @@ void main ( )
 
     writefln("Response: %s", buf[0 .. received]);
 
+    writefln("Closing connection");
     client.shutdown(SocketShutdown.BOTH);
     client.close();
 }
