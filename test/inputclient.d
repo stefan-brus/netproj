@@ -8,6 +8,7 @@ module client;
 
 import std.socket;
 import std.stdio;
+import std.string;
 
 /**
  * Constants
@@ -36,8 +37,13 @@ void main ( )
     }
 
     string line;
-    while ( (line = readln()) !is null )
+    while ( (line = readln().chomp()) !is null )
     {
+        if ( line == "exit" )
+        {
+            break;
+        }
+
         client.send(line);
 
         char[1024] buf;
