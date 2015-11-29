@@ -77,6 +77,7 @@ class ConnectionPool
             {
                 handler.handle(socket);
                 handled = true;
+                break;
             }
         }
 
