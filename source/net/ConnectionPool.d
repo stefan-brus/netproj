@@ -9,16 +9,14 @@ import net.ConnectionHandler;
 import std.socket;
 
 /**
- * Connection delegate convenience alias
- */
-
-alias ConnectionDg = ConnectionHandler.ConnectionDg;
-
-/**
  * Connection pool class
+ *
+ * Template params:
+ *      T = The connection handler type
+ *      U = The connection handler constructor arguments
  */
 
-class ConnectionPool
+class ConnectionPool ( T : ConnectionHandler, U ... )
 {
     /**
      * The connection handlers
@@ -26,7 +24,7 @@ class ConnectionPool
      * TODO: Use actual object pool
      */
 
-    private ConnectionHandler[] pool;
+    private T[] pool;
 
     /**
      * The maximum number of connections
@@ -37,23 +35,23 @@ class ConnectionPool
     private size_t max_conns;
 
     /**
-     * The connection handler delegate
+     * The constructor arguments
      */
 
-    private ConnectionDg dg;
+    private U args;
 
     /**
      * Constructor
      *
      * Params:
-     *      dg = The handler delegate
-     *      max_conns = Optional, the max number of connections
+     *      max_conns = The max number of connections
+     *      args = The constructor arguments
      */
 
-    this ( ConnectionDg dg, size_t max_conns = 0 )
+    this ( size_t max_conns, U args )
     {
-        this.dg = dg;
         this.max_conns = max_conns;
+        this.args = args;
     }
 
     /**
@@ -83,7 +81,7 @@ class ConnectionPool
 
         if ( !handled && (this.max_conns == 0 || this.pool.length < this.max_conns) )
         {
-            auto handler = new ConnectionHandler(this.dg);
+            auto handler = new T(this.args);
             this.pool ~= handler;
             handler.handle(socket);
             handled = true;

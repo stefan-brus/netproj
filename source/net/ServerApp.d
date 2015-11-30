@@ -8,6 +8,7 @@
 module net.ServerApp;
 
 import net.ConnectionPool;
+import net.UserHandler;
 
 import util.fiber.IntervalEvent;
 
@@ -65,7 +66,9 @@ class ServerApp
      * The connection pool
      */
 
-    private ConnectionPool pool;
+    private alias UserPool = ConnectionPool!UserHandler;
+
+    private UserPool pool;
 
     /**
      * The status printer interval event
@@ -78,14 +81,13 @@ class ServerApp
      *
      * Params:
      *      config = The configuration
-     *      dg = The connection handler delegate
      */
 
-    this ( Config config, ConnectionDg dg )
+    this ( Config config )
     {
         this.config = config;
         this.fiber = new Fiber(&this.fiberRun);
-        this.pool = new ConnectionPool(dg, this.config.max_conns);
+        this.pool = new UserPool(this.config.max_conns);
         this.print_status = new IntervalEvent(&this.printStatus, 1);
     }
 

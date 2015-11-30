@@ -32,13 +32,13 @@ class ConnectionHandler
      * The fiber
      */
 
-    private Fiber fiber;
+    protected Fiber fiber;
 
     /**
      * The socket
      */
 
-    private Socket socket;
+    protected Socket socket;
 
     /**
      * Constructor
@@ -79,6 +79,20 @@ class ConnectionHandler
     body
     {
         this.fiber.call();
+    }
+
+    /**
+     * Write to the handler's socket
+     *
+     * Naively assumes that the message can be sent with one send call
+     *
+     * Params:
+     *      msg = The message to write
+     */
+
+    void send ( string msg )
+    {
+        this.socket.send(msg);
     }
 
     /**
