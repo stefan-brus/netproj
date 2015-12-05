@@ -20,7 +20,7 @@ abstract class ISendReceiveHandler : ConnectionHandler
      * The buffer to receive data
      */
 
-    enum RECEIVE_BUF_LEN = 1024 * 1024;
+    enum RECEIVE_BUF_LEN = 1024;
 
     private char[RECEIVE_BUF_LEN] receive_buf;
 

@@ -33,8 +33,8 @@ class UserHandler : ISendReceiveHandler
 
     override protected void onConnect ( Socket client )
     {
-        writefln("Accepted connection from %s", client.remoteAddress());
         this.address = client.remoteAddress().toString();
+        writefln("Accepted connection from %s", this.address);
     }
 
     /**
@@ -52,7 +52,7 @@ class UserHandler : ISendReceiveHandler
 
     override protected void onReceive ( string msg )
     {
-        writefln("%s received: %s", this.address, msg);
+        writefln("%s received: %s", this.toString(), msg);
         this.msg = msg;
     }
 
@@ -62,7 +62,16 @@ class UserHandler : ISendReceiveHandler
 
     override protected string onSend ( )
     {
-        writefln("%s response: %s", this.address, this.msg);
+        writefln("%s response: %s", this.toString(), this.msg);
         return this.msg;
+    }
+
+    /**
+     * toString implementation
+     */
+
+    override public string toString ( )
+    {
+        return this.address;
     }
 }
