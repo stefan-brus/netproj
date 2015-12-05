@@ -6,17 +6,5 @@
 	"dependencies": {
 	},
 
-    "targetType": "none",
-    "configurations": [
-        {
-            "name": "chat_server",
-            "targetType": "executable",
-            "mainSourceFile": "source/chat_server.d"
-        },
-        {
-            "name": "ping_client",
-            "targetType": "executable",
-            "mainSourceFile": "source/ping_client.d"
-        }
-    ]
+    "targetType": "none"
 }
