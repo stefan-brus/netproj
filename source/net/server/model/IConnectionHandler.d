@@ -2,32 +2,18 @@
  * A TCP socket connection handler that runs in a fiber
  */
 
-module net.ConnectionHandler;
+module net.server.model.IConnectionHandler;
 
 import core.thread;
 
 import std.socket;
 
 /**
- * Connection delegate convenience alias
- */
-
-alias ConnectionDg = ConnectionHandler.ConnectionDg;
-
-/**
  * Connection handler class
  */
 
-class ConnectionHandler
+abstract class IConnectionHandler
 {
-    /**
-     * The delegate to run in the fiber
-     */
-
-    alias ConnectionDg = void delegate ( Socket );
-
-    private ConnectionDg dg;
-
     /**
      * The fiber
      */
@@ -42,14 +28,10 @@ class ConnectionHandler
 
     /**
      * Constructor
-     *
-     * Params:
-     *      dg = The handler delegate
      */
 
-    this ( ConnectionDg dg )
+    this ( )
     {
-        this.dg = dg;
         this.fiber = new Fiber(&this.fiberRun);
     }
 
@@ -105,6 +87,15 @@ class ConnectionHandler
     }
 
     /**
+     * Override this, the main logic of the handler
+     *
+     * Params:
+     *      client = The client socket
+     */
+
+    abstract protected void logic ( Socket client );
+
+    /**
      * The fiber routine
      *
      * Calls the handler delegate with the current socket
@@ -117,6 +108,6 @@ class ConnectionHandler
     }
     body
     {
-        this.dg(this.socket);
+        this.logic(this.socket);
     }
 }

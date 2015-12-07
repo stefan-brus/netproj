@@ -2,9 +2,9 @@
  * Handle a user connection
  */
 
-module net.UserHandler;
+module net.server.UserHandler;
 
-import net.model.ISendReceiveHandler;
+import net.server.model.ISendReceiveHandler;
 
 import std.socket;
 import std.stdio;

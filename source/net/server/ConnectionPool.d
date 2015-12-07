@@ -2,9 +2,9 @@
  * Manage a "pool" of connection handlers
  */
 
-module net.ConnectionPool;
+module net.server.ConnectionPool;
 
-import net.ConnectionHandler;
+import net.server.model.IConnectionHandler;
 
 import std.socket;
 
@@ -16,7 +16,7 @@ import std.socket;
  *      U = The connection handler constructor arguments
  */
 
-class ConnectionPool ( T : ConnectionHandler, U ... )
+class ConnectionPool ( T : IConnectionHandler, U ... )
 {
     /**
      * The connection handlers

@@ -2,9 +2,9 @@
  * Abstract class for a handler that waits for data and sends a response
  */
 
-module net.model.ISendReceiveHandler;
+module net.server.model.ISendReceiveHandler;
 
-import net.ConnectionHandler;
+import net.server.model.IConnectionHandler;
 
 import core.thread;
 
@@ -14,7 +14,7 @@ import std.socket;
  * Send receive handler abstract class
  */
 
-abstract class ISendReceiveHandler : ConnectionHandler
+abstract class ISendReceiveHandler : IConnectionHandler
 {
     /**
      * The buffer to receive data
@@ -23,15 +23,6 @@ abstract class ISendReceiveHandler : ConnectionHandler
     enum RECEIVE_BUF_LEN = 1024;
 
     private char[RECEIVE_BUF_LEN] receive_buf;
-
-    /**
-     * Constructor
-     */
-
-    this ( )
-    {
-        super(&this.receiveSendLoop);
-    }
 
     /**
      * Override this, the function to call when a client connects
@@ -64,7 +55,7 @@ abstract class ISendReceiveHandler : ConnectionHandler
     abstract protected string onSend ( );
 
     /**
-     * The receive send loop connection handler delegate
+     * The receive send loop main logic method
      *
      * Naively assumes that the send will work in one call
      *
@@ -72,7 +63,7 @@ abstract class ISendReceiveHandler : ConnectionHandler
      *      client = The client socket
      */
 
-    private void receiveSendLoop ( Socket client )
+    override protected void logic ( Socket client )
     {
         this.onConnect(client);
 

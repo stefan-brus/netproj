@@ -5,10 +5,10 @@
  * Creates a connection handler from an object pool for each incoming connection
  */
 
-module net.ServerApp;
+module net.server.ServerApp;
 
-import net.ConnectionPool;
-import net.UserHandler;
+import net.server.ConnectionPool;
+import net.server.UserHandler;
 
 import util.fiber.IntervalEvent;
 

@@ -4,7 +4,7 @@
 
 module app;
 
-import net.ServerApp;
+import net.server.ServerApp;
 
 import core.thread;
 
