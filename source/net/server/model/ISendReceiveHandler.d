@@ -24,6 +24,8 @@ abstract class ISendReceiveHandler : IConnectionHandler
 
     private char[RECEIVE_BUF_LEN] receive_buf;
 
+    private string message;
+
     /**
      * Override this, the function to call when a client connects
      */
@@ -70,10 +72,29 @@ abstract class ISendReceiveHandler : IConnectionHandler
         while ( true )
         {
             int received = Socket.ERROR;
+            this.message.length = 0;
 
             while ( received == Socket.ERROR )
             {
-                received = client.receive(this.receive_buf);
+                bool has_received;
+                int last_received;
+
+                while ( (last_received = this.receiveAndBuffer(client)) != Socket.ERROR )
+                {
+                    has_received = true;
+
+                    if ( last_received == 0 )
+                    {
+                        break;
+                    }
+                }
+
+                if ( has_received )
+                {
+                    received = last_received;
+                    break;
+                }
+
                 Fiber.yield();
             }
 
@@ -83,12 +104,36 @@ abstract class ISendReceiveHandler : IConnectionHandler
                 break;
             }
 
-            this.onReceive(cast(string)this.receive_buf[0 .. received]);
+            this.onReceive(this.message);
 
             client.send(this.onSend());
         }
 
         client.shutdown(SocketShutdown.BOTH);
         client.close();
+    }
+
+    /**
+     * Helper function to receive and buffer from a given socket
+     *
+     * Appends the received data to the message buffer
+     *
+     * Params:
+     *      client = The client socket
+     *
+     * Returns:
+     *      The number of received bytes
+     */
+
+    private int receiveAndBuffer ( Socket client )
+    {
+        auto received = client.receive(this.receive_buf);
+
+        if ( received != Socket.ERROR )
+        {
+            this.message ~= cast(string)this.receive_buf[0 ..  received];
+        }
+
+        return received;
     }
 }
