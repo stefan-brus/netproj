@@ -5,6 +5,7 @@
 module app;
 
 import net.server.ServerApp;
+import net.server.UserHandler;
 
 import core.thread;
 
@@ -21,12 +22,18 @@ enum BACKLOG = 10;
 enum MAX_CONNS = 60;
 
 /**
+ * Application type alias
+ */
+
+alias App = ServerApp!UserHandler;
+
+/**
  * Main
  */
 
 void main ( )
 {
-    auto config = ServerApp.Config(ADDRESS, PORT, BACKLOG, MAX_CONNS);
-    auto app = new ServerApp(config);
+    auto config = App.Config(ADDRESS, PORT, BACKLOG, MAX_CONNS);
+    auto app = new App(config);
     app.run();
 }
