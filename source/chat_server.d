@@ -2,10 +2,10 @@
  * TCP server
  */
 
-module app;
+module chat_server;
 
-import net.server.ServerApp;
-import net.server.UserHandler;
+import net.server.SingleServerApp;
+import net.server.handler.UserHandler;
 
 import core.thread;
 
@@ -25,7 +25,7 @@ enum MAX_CONNS = 60;
  * Application type alias
  */
 
-alias App = ServerApp!UserHandler;
+alias App = SingleServerApp!UserHandler;
 
 /**
  * Main

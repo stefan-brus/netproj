@@ -2,9 +2,9 @@
  * Abstract class for a handler that waits for data and sends a response
  */
 
-module net.server.model.ISendReceiveHandler;
+module net.server.handler.model.ISendReceiveHandler;
 
-import net.server.model.IConnectionHandler;
+import net.server.handler.model.IConnectionHandler;
 
 import core.thread;
 

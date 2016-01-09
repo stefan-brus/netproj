@@ -2,7 +2,7 @@
  * A TCP socket connection handler that runs in a fiber
  */
 
-module net.server.model.IConnectionHandler;
+module net.server.handler.model.IConnectionHandler;
 
 import core.thread;
 

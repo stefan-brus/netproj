@@ -5,8 +5,9 @@
  * Creates a connection handler from an object pool for each incoming connection
  */
 
-module net.server.ServerApp;
+module net.server.SingleServerApp;
 
+import net.server.model.IServerApp;
 import net.server.ConnectionPool;
 
 import util.fiber.IntervalEvent;
@@ -23,7 +24,7 @@ import std.stdio;
  *      Handler = The connection handler type
  */
 
-class ServerApp ( Handler )
+class SingleServerApp ( Handler ) : IServerApp
 {
     /**
      * App configuration
@@ -59,24 +60,12 @@ class ServerApp ( Handler )
     private Config config;
 
     /**
-     * The main app fiber
-     */
-
-    private Fiber fiber;
-
-    /**
      * The connection pool
      */
 
     private alias Pool = ConnectionPool!Handler;
 
     private Pool pool;
-
-    /**
-     * The status printer interval event
-     */
-
-    private IntervalEvent print_status;
 
     /**
      * Constructor
@@ -87,26 +76,16 @@ class ServerApp ( Handler )
 
     this ( Config config )
     {
+        super();
         this.config = config;
-        this.fiber = new Fiber(&this.fiberRun);
         this.pool = new Pool(this.config.max_conns);
-        this.print_status = new IntervalEvent(&this.printStatus, 1);
-    }
-
-    /**
-     * Run the app, handing over control to the main fiber
-     */
-
-    void run ( )
-    {
-        this.fiber.call();
     }
 
     /**
      * The main fiber routine
      */
 
-    private void fiberRun ( )
+    override protected void fiberRun ( )
     {
         auto server = new TcpSocket();
         server.blocking = false;
@@ -143,7 +122,7 @@ class ServerApp ( Handler )
      * Print the server status
      */
 
-    private void printStatus ( )
+    override protected void printStatus ( )
     {
         writefln("Connections: %d busy, %d available, %d max", this.pool.busy, this.pool.length, this.config.max_conns);
     }

@@ -4,7 +4,7 @@
 
 module net.server.ConnectionPool;
 
-import net.server.model.IConnectionHandler;
+import net.server.handler.model.IConnectionHandler;
 
 import std.socket;
 
