@@ -13,10 +13,9 @@ import std.socket;
  *
  * Template params:
  *      T = The connection handler type
- *      U = The connection handler constructor arguments
  */
 
-class ConnectionPool ( T : IConnectionHandler, U ... )
+class ConnectionPool ( T : IConnectionHandler )
 {
     /**
      * The connection handlers
@@ -35,23 +34,25 @@ class ConnectionPool ( T : IConnectionHandler, U ... )
     private size_t max_conns;
 
     /**
-     * The constructor arguments
+     * The delegate to create a new handler
      */
 
-    private U args;
+    alias CreateHandlerDg = T delegate ( );
+
+    private CreateHandlerDg create_dg;
 
     /**
      * Constructor
      *
      * Params:
      *      max_conns = The max number of connections
-     *      args = The constructor arguments
+     *      create_dg = The create handler delegate
      */
 
-    this ( size_t max_conns, U args )
+    this ( size_t max_conns, CreateHandlerDg create_dg )
     {
         this.max_conns = max_conns;
-        this.args = args;
+        this.create_dg = create_dg;
     }
 
     /**
@@ -81,7 +82,7 @@ class ConnectionPool ( T : IConnectionHandler, U ... )
 
         if ( !handled && (this.max_conns == 0 || this.pool.length < this.max_conns) )
         {
-            auto handler = new T(this.args);
+            auto handler = this.create_dg();
             this.pool ~= handler;
             handler.handle(socket);
             handled = true;

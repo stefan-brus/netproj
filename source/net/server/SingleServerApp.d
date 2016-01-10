@@ -72,13 +72,14 @@ class SingleServerApp ( Handler ) : IServerApp
      *
      * Params:
      *      config = The configuration
+     *      create_dg = The delegate to create a new connection handler
      */
 
-    this ( Config config )
+    this ( Config config, ConnectionPool!(Handler).CreateHandlerDg create_dg )
     {
         super();
         this.config = config;
-        this.pool = new Pool(this.config.max_conns);
+        this.pool = new Pool(this.config.max_conns, create_dg);
     }
 
     /**

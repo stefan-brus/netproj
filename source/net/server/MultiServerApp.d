@@ -65,11 +65,11 @@ class MultiServerApp ( Handlers ... ) : IServerApp
      * The connection pools
      */
 
-    alias Pools = WrapPools!(Handlers);
+    private alias Pools = WrapPools!(Handlers);
 
     private Pools pools;
 
-    static template WrapPools ( T ... )
+    private template WrapPools ( T ... )
     {
         static if ( T.length == 1 )
         {
@@ -82,20 +82,42 @@ class MultiServerApp ( Handlers ... ) : IServerApp
     }
 
     /**
+     * The handler creation delegates
+     */
+
+    private alias CreateDgs = CreateDgAliases!(Handlers);
+
+    private CreateDgs create_dgs;
+
+    private template CreateDgAliases ( T ... )
+    {
+        static if ( T.length == 1 )
+        {
+            alias CreateDgAliases = T[0] delegate ( );
+        }
+        else
+        {
+            alias CreateDgAliases = AliasSeq!(T[0] delegate ( ), CreateDgAliases!(T[1 .. $]));
+        }
+    }
+
+    /**
      * Constructor
      *
      * Params:
      *      config = The configuration
+     *      create_dgs = The delegates to create new handlers
      */
 
-    this ( Config config )
+    this ( Config config, CreateDgs create_dgs )
     {
         super();
         this.config = config;
+        this.create_dgs = create_dgs;
 
-        foreach ( ref pool; this.pools )
+        foreach ( i, ref pool; this.pools )
         {
-            pool = new typeof(pool)(this.config.max_conns);
+            pool = new typeof(pool)(this.config.max_conns, this.create_dgs[i]);
         }
     }
 

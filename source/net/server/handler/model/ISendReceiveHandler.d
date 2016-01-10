@@ -4,7 +4,7 @@
 
 module net.server.handler.model.ISendReceiveHandler;
 
-import net.server.handler.model.IConnectionHandler;
+import net.server.handler.model.IReceiveHandler;
 
 import core.thread;
 
@@ -14,39 +14,8 @@ import std.socket;
  * Send receive handler abstract class
  */
 
-abstract class ISendReceiveHandler : IConnectionHandler
+abstract class ISendReceiveHandler : IReceiveHandler
 {
-    /**
-     * The buffer to receive data
-     */
-
-    enum RECEIVE_BUF_LEN = 1024;
-
-    private char[RECEIVE_BUF_LEN] receive_buf;
-
-    private string message;
-
-    /**
-     * Override this, the function to call when a client connects
-     */
-
-    abstract protected void onConnect ( Socket client );
-
-    /**
-     * Override this, the function to call when the connection is closed
-     */
-
-    abstract protected void onClose ( );
-
-    /**
-     * Override this, the function to call when data is received
-     *
-     * Params:
-     *      msg = The data received
-     */
-
-    abstract protected void onReceive ( string msg );
-
     /**
      * Override this, the function to call to generate the response
      *
@@ -111,29 +80,5 @@ abstract class ISendReceiveHandler : IConnectionHandler
 
         client.shutdown(SocketShutdown.BOTH);
         client.close();
-    }
-
-    /**
-     * Helper function to receive and buffer from a given socket
-     *
-     * Appends the received data to the message buffer
-     *
-     * Params:
-     *      client = The client socket
-     *
-     * Returns:
-     *      The number of received bytes
-     */
-
-    private int receiveAndBuffer ( Socket client )
-    {
-        auto received = client.receive(this.receive_buf);
-
-        if ( received != Socket.ERROR )
-        {
-            this.message ~= cast(string)this.receive_buf[0 ..  received];
-        }
-
-        return received;
     }
 }

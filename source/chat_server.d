@@ -33,7 +33,12 @@ alias App = SingleServerApp!UserHandler;
 
 void main ( )
 {
+    UserHandler createHandler ( )
+    {
+        return new UserHandler();
+    }
+
     auto config = App.Config(ADDRESS, PORT, BACKLOG, MAX_CONNS);
-    auto app = new App(config);
+    auto app = new App(config, &createHandler);
     app.run();
 }
