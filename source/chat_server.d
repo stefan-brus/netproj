@@ -4,8 +4,9 @@
 
 module chat_server;
 
+import chat.UserHandler;
+
 import net.server.SingleServerApp;
-import net.server.handler.UserHandler;
 
 import core.thread;
 

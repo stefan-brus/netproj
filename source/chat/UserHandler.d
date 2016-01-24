@@ -2,7 +2,7 @@
  * Handle a user connection
  */
 
-module net.server.handler.UserHandler;
+module chat.UserHandler;
 
 import net.server.handler.model.ISendReceiveHandler;
 

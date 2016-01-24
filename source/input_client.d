@@ -43,7 +43,7 @@ class InputApp : ITcpClientApp!true
         }
 
         string line;
-        while ( (line = readln().chomp()) !is null )
+        while ( (line = readln()) !is null )
         {
             if ( line == "exit" )
             {
