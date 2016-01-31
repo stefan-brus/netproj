@@ -1,10 +1,10 @@
 /**
  * Curl-based web crawler application
  *
- * Usage: web_crawler URL [MAX_HITS]
+ * Usage: curl_crawler URL [MAX_HITS]
  */
 
-module web_crawler;
+module curl_crawler;
 
 import arsd.dom;
 
@@ -175,7 +175,7 @@ void main ( string[] args )
 {
     if ( args.length < 2 )
     {
-        writefln("USAGE: web_crawler URL [MAX_HITS]");
+        writefln("USAGE: curl_crawler URL [MAX_HITS]");
         return;
     }
 
@@ -188,7 +188,7 @@ void main ( string[] args )
     }
     catch ( Exception e )
     {
-        writefln("USAGE: web_crawler URL [MAX_HITS]");
+        writefln("USAGE: curl_crawler URL [MAX_HITS]");
         return;
     }
 
