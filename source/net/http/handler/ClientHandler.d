@@ -4,7 +4,7 @@
  * Sends a request and calls a callback when a response is received
  */
 
-module net.http.ClientHandler;
+module net.http.handler.ClientHandler;
 
 import net.http.Request;
 import net.http.Response;

@@ -6,7 +6,7 @@
 
 module http_client;
 
-import net.http.ClientHandler;
+import net.http.handler.ClientHandler;
 import net.http.Request;
 import net.http.Response;
 import std.stdio;

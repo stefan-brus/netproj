@@ -8,7 +8,7 @@ module web_crawler;
 
 import arsd.dom;
 
-import net.http.ClientHandler;
+import net.http.handler.ClientHandler;
 import net.http.Request;
 import net.http.Response;
 
