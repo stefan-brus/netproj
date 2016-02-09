@@ -5,9 +5,15 @@
 module net.http.handler.StaticHTTPHandler;
 
 import net.http.handler.model.IHTTPRequestHandler;
+import net.http.Common;
+import net.http.Request;
 import net.http.Response;
 
+import util.File;
+
+import std.conv;
 import std.socket;
+import std.stdio;
 
 /**
  * Static HTTP request handler class
@@ -15,6 +21,12 @@ import std.socket;
 
 class StaticHTTPHandler : IHTTPRequestHandler
 {
+    /**
+     * The file to serve when a GET / request comes
+     */
+
+    enum DEFAULT_CONTENT = "index.html";
+
     /**
      * The function to call when a client connects
      */
@@ -42,6 +54,32 @@ class StaticHTTPHandler : IHTTPRequestHandler
 
     override protected HTTPResponse createResponse ( )
     {
-        return okResponse();
+        auto path = this.request.request_uri == "/" ?
+            DEFAULT_CONTENT : this.request.request_uri;
+
+        HTTPResponse response;
+        response.http_version = HTTPVersion.HTTP_1_1;
+
+        auto file = File(path, "r");
+
+        if ( file.isOpen )
+        {
+            response.status = 200;
+            response.reason = HTTP_STATUS_REASON[200];
+
+            auto contents = fileContents(file);
+            response.http_headers["Content-Length"] = to!string(contents.length);
+            response.content = contents;
+        }
+        else
+        {
+            response.status = 404;
+            response.reason = HTTP_STATUS_REASON[404];
+            response.http_headers["Content-Length"] = "0";
+        }
+
+        response.http_headers["Content-Type"] = "text/html; charset=iso-8859-1";
+
+        return response;
     }
 }

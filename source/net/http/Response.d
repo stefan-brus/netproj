@@ -13,6 +13,15 @@ import std.format;
 import std.string;
 
 /**
+ * Some reasons for status codes
+ */
+
+enum HTTP_STATUS_REASON = [
+    200: "OK",
+    404: "Not Found"
+];
+
+/**
  * HTTP response struct
  */
 
