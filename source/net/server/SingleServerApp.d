@@ -121,6 +121,7 @@ class SingleServerApp ( Handler ) : IServerApp
 
             if ( client.isAlive )
             {
+                client.blocking = false;
                 if ( !this.pool.dispatch(client) )
                 {
                     // Send without checking for success
