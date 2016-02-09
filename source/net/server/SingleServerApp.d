@@ -98,7 +98,26 @@ class SingleServerApp ( Handler ) : IServerApp
 
         while ( true )
         {
-            auto client = server.accept();
+            Socket client;
+            bool accepted;
+
+            while ( !accepted ) try
+            {
+                client = server.accept();
+                accepted = true;
+            }
+            catch ( SocketAcceptException e )
+            {
+                enum EAGAIN_ERROR_CODE = 11;
+                if ( e.errorCode != EAGAIN_ERROR_CODE )
+                {
+                    throw e;
+                }
+                else
+                {
+                    this.resumeOthers();
+                }
+            }
 
             if ( client.isAlive )
             {
@@ -114,8 +133,7 @@ class SingleServerApp ( Handler ) : IServerApp
                 client.close();
             }
 
-            this.print_status.resume();
-            this.pool.resume();
+            this.resumeOthers();
         }
     }
 
@@ -126,5 +144,15 @@ class SingleServerApp ( Handler ) : IServerApp
     override protected void printStatus ( )
     {
         writefln("Connections: %d busy, %d available, %d max", this.pool.busy, this.pool.length, this.config.max_conns);
+    }
+
+    /**
+     * Resume the other fibers
+     */
+
+    private void resumeOthers ( )
+    {
+        this.print_status.resume();
+        this.pool.resume();
     }
 }
