@@ -127,7 +127,7 @@ struct HTTPResponse
         result.reason = status_line[2 .. $].join(" ");
 
         // Parse the headers
-        uint last_header_idx;
+        size_t last_header_idx;
         foreach ( i, line; splitted )
         {
             auto header = line.split(" ");

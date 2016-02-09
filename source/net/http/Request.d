@@ -126,7 +126,7 @@ struct HTTPRequest
         result.http_version = HTTP_STR_VERSION[status_line[2]];
 
         // Parse the headers
-        uint last_header_idx;
+        size_t last_header_idx;
         foreach ( i, line; splitted )
         {
             auto header = line.split(" ");

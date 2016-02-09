@@ -40,13 +40,13 @@ abstract class ISendReceiveHandler : IReceiveHandler
 
         while ( true )
         {
-            int received = Socket.ERROR;
+            long received = Socket.ERROR;
             this.message.length = 0;
 
             while ( received == Socket.ERROR )
             {
                 bool has_received;
-                int last_received;
+                long last_received;
 
                 while ( (last_received = this.receiveAndBuffer(client)) != Socket.ERROR )
                 {

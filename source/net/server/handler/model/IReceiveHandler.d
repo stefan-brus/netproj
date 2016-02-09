@@ -62,13 +62,13 @@ abstract class IReceiveHandler : IConnectionHandler
 
         while ( true )
         {
-            int received = Socket.ERROR;
+            long received = Socket.ERROR;
             this.message.length = 0;
 
             while ( received == Socket.ERROR )
             {
                 bool has_received;
-                int last_received;
+                long last_received;
 
                 while ( (last_received = this.receiveAndBuffer(client)) != Socket.ERROR )
                 {
@@ -114,7 +114,7 @@ abstract class IReceiveHandler : IConnectionHandler
      *      The number of received bytes
      */
 
-    protected int receiveAndBuffer ( Socket client )
+    protected long receiveAndBuffer ( Socket client )
     {
         auto received = client.receive(this.receive_buf);
 
