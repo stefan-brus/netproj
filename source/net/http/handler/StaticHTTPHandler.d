@@ -50,6 +50,9 @@ class StaticHTTPHandler : IHTTPRequestHandler
      *
      * Returns:
      *      The response
+     *
+     * Throws:
+     *      On file errors
      */
 
     override protected HTTPResponse createResponse ( )
@@ -61,24 +64,15 @@ class StaticHTTPHandler : IHTTPRequestHandler
         response.http_version = HTTPVersion.HTTP_1_1;
 
         auto file = File(path, "r");
+        enforce(file.isOpen, "Unable to open file: " ~ path);
 
-        if ( file.isOpen )
-        {
-            response.status = 200;
-            response.reason = HTTP_STATUS_REASON[200];
+        response.status = 200;
+        response.reason = HTTP_STATUS_REASON[200];
 
-            auto contents = fileContents(file);
-            response.http_headers["Content-Length"] = to!string(contents.length);
-            response.content = contents;
-        }
-        else
-        {
-            response.status = 404;
-            response.reason = HTTP_STATUS_REASON[404];
-            response.http_headers["Content-Length"] = "0";
-        }
-
+        auto contents = fileContents(file);
+        response.http_headers["Content-Length"] = to!string(contents.length);
         response.http_headers["Content-Type"] = "text/html; charset=iso-8859-1";
+        response.content = contents;
 
         return response;
     }

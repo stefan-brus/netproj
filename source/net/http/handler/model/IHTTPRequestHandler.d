@@ -19,6 +19,17 @@ import std.stdio;
 abstract class IHTTPRequestHandler : ISendReceiveHandler
 {
     /**
+     * Default error response
+     */
+
+    enum DEFAULT_ERROR = HTTPResponse(
+```HTTP/1.1 404 Not Found
+Content-Length: 12
+Content-Type: text/html; charset=iso-8859-1
+
+four oh four```);
+
+    /**
      * The HTTP request
      */
 
@@ -56,7 +67,17 @@ abstract class IHTTPRequestHandler : ISendReceiveHandler
 
     override protected string onSend ( )
     {
-        auto response = this.createResponse();
+        HTTPResponse response;
+
+        try
+        {
+            response = this.createResponse();
+        }
+        catch ( Exception e )
+        {
+            writefln("Error creating HTTP response: %s\nThe request:\n%s", e.msg, this.request);
+            return DEFAULT_ERROR;
+        }
 
         writefln("Sending response:\n%s", response);
 
