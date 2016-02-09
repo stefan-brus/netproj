@@ -49,6 +49,37 @@ struct HTTPResponse
     string content;
 
     /**
+     * Serialize the response to a string
+     */
+
+    string toString ( )
+    {
+        string result;
+
+        result ~= HTTP_VERSION_STR[this.http_version];
+        result ~= " ";
+
+        result ~= to!string(this.status);
+        result ~= " ";
+
+        result ~= this.reason;
+        result ~= "\r\n";
+
+        foreach ( k, v; this.http_headers )
+        {
+            result ~= format("%s: %s", k, v);
+            result ~= "\r\n";
+        }
+
+        result ~= "\r\n";
+        result ~= this.content;
+
+        return result;
+    }
+
+    alias toString this;
+
+    /**
      * Parse a response
      *
      * Params:
@@ -147,4 +178,16 @@ Content-Type: text/html; charset=iso-8859-1
 <p>The document has moved <a href="http://www.gamefaqs.com/">here</a>.</p>
 </body></html>`.splitLines().join("\r\n").strip();
     assert(response.content == expected_body);
+}
+
+/**
+ * Helper function to create a simple 200 OK response
+*
+ * Returns:
+ *      The HTTP 200 OK response
+ */
+
+HTTPResponse okResponse ( )
+{
+    return HTTPResponse("HTTP/1.1 200 OK\r\nContent-Length: 0\r\n");
 }
