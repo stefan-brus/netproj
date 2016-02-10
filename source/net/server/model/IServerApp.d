@@ -6,7 +6,7 @@ module net.server.model.IServerApp;
 
 import core.thread;
 
-import util.fiber.IntervalEvent;
+import util.log.PeriodicFileLogger;
 
 /**
  * Server app base class
@@ -21,10 +21,10 @@ abstract class IServerApp
     protected Fiber fiber;
 
     /**
-     * The status printer interval event
+     * The server logger
      */
 
-    protected IntervalEvent print_status;
+    protected PeriodicFileLogger logger;
 
     /**
      * Constructor
@@ -33,7 +33,9 @@ abstract class IServerApp
     this ( )
     {
         this.fiber = new Fiber(&this.fiberRun);
-        this.print_status = new IntervalEvent(&this.printStatus, 1);
+
+        enum LOGGER_CONFIG = PeriodicFileLogger.Config("log/server.log", 1, true);
+        this.logger = new PeriodicFileLogger(LOGGER_CONFIG);
     }
 
     /**
@@ -50,10 +52,4 @@ abstract class IServerApp
      */
 
     abstract protected void fiberRun ( );
-
-    /**
-     * Override this, print the server status
-     */
-
-    abstract protected void printStatus ( );
 }

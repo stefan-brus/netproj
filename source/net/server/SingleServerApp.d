@@ -94,7 +94,7 @@ class SingleServerApp ( Handler ) : IServerApp
         server.listen(this.config.backlog);
         writefln("Listening on %s", server.localAddress());
 
-        this.print_status.start();
+        this.logger.start();
 
         while ( true )
         {
@@ -122,6 +122,8 @@ class SingleServerApp ( Handler ) : IServerApp
             if ( client.isAlive )
             {
                 client.blocking = false;
+                this.logger.log("Accepted connection from: %s", client.remoteAddress.toAddrString());
+
                 if ( !this.pool.dispatch(client) )
                 {
                     // Send without checking for success
@@ -139,21 +141,12 @@ class SingleServerApp ( Handler ) : IServerApp
     }
 
     /**
-     * Print the server status
-     */
-
-    override protected void printStatus ( )
-    {
-        writefln("Connections: %d busy, %d available, %d max", this.pool.busy, this.pool.length, this.config.max_conns);
-    }
-
-    /**
      * Resume the other fibers
      */
 
     private void resumeOthers ( )
     {
-        this.print_status.resume();
+        this.logger.resume();
         this.pool.resume();
     }
 }
