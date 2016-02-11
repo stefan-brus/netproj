@@ -60,11 +60,17 @@ class StaticHTTPHandler : IHTTPRequestHandler
         auto path = this.request.request_uri == "/" ?
             DEFAULT_CONTENT : this.request.request_uri;
 
-        HTTPResponse response;
-        response.http_version = HTTPVersion.HTTP_1_1;
+        // Strip leading '/' to allow for relative search paths
+        if ( path.length > 0  && path[0] == '/' )
+        {
+            path = path[1 .. $];
+        }
 
         auto file = File(path, "r");
         enforce(file.isOpen, "Unable to open file: " ~ path);
+
+        HTTPResponse response;
+        response.http_version = HTTPVersion.HTTP_1_1;
 
         response.status = 200;
         response.reason = HTTP_STATUS_REASON[200];
