@@ -61,7 +61,7 @@ four oh four```);
         }
         catch ( Exception e )
         {
-            writefln("Error parsing HTTP request: %s", this.request);
+            writefln("Error parsing HTTP request: %s", msg);
             this.parse_success = false;
         }
     }
