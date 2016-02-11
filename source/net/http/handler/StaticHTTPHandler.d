@@ -61,7 +61,7 @@ class StaticHTTPHandler : IHTTPRequestHandler
             DEFAULT_CONTENT : this.request.request_uri;
 
         // Strip leading '/' to allow for relative search paths
-        if ( path.length > 0  && path[0] == '/' )
+        if ( path.length == 0 || path[0] == '/' )
         {
             path = path[1 .. $];
         }
