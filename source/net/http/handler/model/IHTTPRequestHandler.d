@@ -36,6 +36,12 @@ four oh four```);
     protected HTTPRequest request;
 
     /**
+     * Whether or not the request was successfully parsed
+     */
+
+    private bool parse_success;
+
+    /**
      * The function to call when data is received
      *
      * Attemps to parse an HTTP request
@@ -51,10 +57,12 @@ four oh four```);
         try
         {
             this.request = HTTPRequest(msg);
+            this.parse_success = true;
         }
         catch ( Exception e )
         {
             writefln("Error parsing HTTP request: %s", this.request);
+            this.parse_success = false;
         }
     }
 
@@ -67,6 +75,11 @@ four oh four```);
 
     override protected string onSend ( )
     {
+        if ( !this.parse_success )
+        {
+            return DEFAULT_ERROR;
+        }
+
         HTTPResponse response;
 
         try
