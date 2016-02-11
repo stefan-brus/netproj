@@ -106,7 +106,7 @@ struct HTTPResponse
         HTTPResponse result;
 
         auto splitted = str.splitLines();
-        enforce(splitted.length > 1, "HTTP response too short: " ~ str);
+        enforce(splitted.length >= 1, "HTTP response too short: " ~ str);
 
         // Parse the status line
         auto status_line = splitted[0].split(" ");
