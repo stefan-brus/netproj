@@ -5,67 +5,43 @@
 module util.log.PeriodicFileLogger;
 
 import util.fiber.IntervalEvent;
-import util.log.model.IBufferedLogger;
+import util.log.model.IPeriodicLogger;
+import util.log.FileLogger;
+import util.Time;
 
+import std.format;
 import std.stdio;
 
 /**
  * Periodic file logger class
  */
 
-class PeriodicFileLogger : IBufferedLogger
+class PeriodicFileLogger : FileLogger, IPeriodicLogger
 {
-    /**
-     * Logger config
-     */
-
-    struct Config
-    {
-        /**
-         * The path to the log file
-         */
-
-        string path;
-
-        /**
-         * The log interval, in seconds
-         */
-
-        uint interval;
-
-        /**
-         * Whether or not to also print to console
-         */
-
-        bool console;
-    }
-
-    private Config config;
-
     /**
      * The interval event
      */
 
-    public IntervalEvent interval_event;
+    private IntervalEvent interval_event;
 
     /**
-     * The log file
+     * The log message buffer
      */
 
-    private File log_file;
+    private string[] log_buf;
 
     /**
      * Constructor
      *
      * Params:
-     *      config = The logger config
+     *      path = The path to the log file
+     *      interval = The log interval, in seconds
      */
 
-    this ( Config config )
+    this ( string path, uint interval )
     {
-        this.config = config;
-        this.interval_event = new IntervalEvent(&this.flush, this.config.interval);
-        this.log_file.open(this.config.path, "a");
+        super(path);
+        this.interval_event = new IntervalEvent(&this.flush, interval);
     }
 
     /**
@@ -87,20 +63,43 @@ class PeriodicFileLogger : IBufferedLogger
     }
 
     /**
-     * Handle a log message
+     * Log a message
+     *
+     * Template params:
+     *      Args = The format string arguments
      *
      * Params:
-     *      msg = The log message
+     *      str = The format string
+     *      args = The format string arguments
      */
 
-    override protected void handle ( string msg )
+    void log ( Args ... ) ( string str, Args args )
     {
-        if ( this.config.console )
+        this.log_buf ~= format("[%s] " ~ str, curTimeStr(), args);
+    }
+
+    /**
+     * Flush the buffer
+     *
+     * Calls the handler method for each message before discarding it
+     */
+
+    private void flush ( )
+    {
+        while ( this.log_buf.length > 0 )
         {
-            writefln(msg);
+            this.log_file.writefln(this.log_buf[0]);
+
+            if ( this.log_buf.length > 1 )
+            {
+                this.log_buf = this.log_buf[1 .. $];
+            }
+            else
+            {
+                this.log_buf.length = 0;
+            }
         }
 
-        this.log_file.writefln(msg);
         this.log_file.flush();
     }
 }

@@ -33,9 +33,7 @@ abstract class IServerApp
     this ( )
     {
         this.fiber = new Fiber(&this.fiberRun);
-
-        enum LOGGER_CONFIG = PeriodicFileLogger.Config("log/server.log", 1, true);
-        this.logger = new PeriodicFileLogger(LOGGER_CONFIG);
+        this.logger = new PeriodicFileLogger("log/server.log", 1);
     }
 
     /**
