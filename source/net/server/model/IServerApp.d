@@ -6,7 +6,8 @@ module net.server.model.IServerApp;
 
 import core.thread;
 
-import util.log.PeriodicFileLogger;
+import util.log.FileLogger;
+import util.log.PeriodicConsoleLogger;
 
 /**
  * Server app base class
@@ -21,10 +22,16 @@ abstract class IServerApp
     protected Fiber fiber;
 
     /**
-     * The server logger
+     * The server file logger
      */
 
-    protected PeriodicFileLogger logger;
+    protected FileLogger file_logger;
+
+    /**
+     * The console logger
+     */
+
+    protected PeriodicConsoleLogger console_logger;
 
     /**
      * Constructor
@@ -33,7 +40,8 @@ abstract class IServerApp
     this ( )
     {
         this.fiber = new Fiber(&this.fiberRun);
-        this.logger = new PeriodicFileLogger("log/server.log", 1);
+        this.file_logger = new FileLogger("log/server.log");
+        this.console_logger = new PeriodicConsoleLogger(1, &this.statusMessage);
     }
 
     /**
@@ -50,4 +58,10 @@ abstract class IServerApp
      */
 
     abstract protected void fiberRun ( );
+
+    /**
+     * Override this, generate the server status message
+     */
+
+    abstract protected string statusMessage ( );
 }

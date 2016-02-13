@@ -5,6 +5,7 @@
 module util.log.FileLogger;
 
 import util.log.model.ILogger;
+import util.Time;
 
 import std.stdio;
 

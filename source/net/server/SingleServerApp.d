@@ -14,6 +14,7 @@ import util.fiber.IntervalEvent;
 
 import core.thread;
 
+import std.format;
 import std.socket;
 import std.stdio;
 
@@ -94,8 +95,6 @@ class SingleServerApp ( Handler ) : IServerApp
         server.listen(this.config.backlog);
         writefln("Listening on %s", server.localAddress());
 
-        this.logger.start();
-
         while ( true )
         {
             Socket client;
@@ -122,7 +121,7 @@ class SingleServerApp ( Handler ) : IServerApp
             if ( client.isAlive )
             {
                 client.blocking = false;
-                this.logger.log("Accepted connection from: %s", client.remoteAddress.toAddrString());
+                this.file_logger.log("Accepted connection from: %s", client.remoteAddress.toAddrString());
 
                 if ( !this.pool.dispatch(client) )
                 {
@@ -141,12 +140,21 @@ class SingleServerApp ( Handler ) : IServerApp
     }
 
     /**
+     * Generate the server status message
+     */
+
+    override protected string statusMessage ( )
+    {
+        return format("Handlers: %d busy %d total %d max", this.pool.busy, this.pool.length, this.config.max_conns);
+    }
+
+    /**
      * Resume the other fibers
      */
 
     private void resumeOthers ( )
     {
-        this.logger.resume();
+        this.console_logger.resume();
         this.pool.resume();
     }
 }
