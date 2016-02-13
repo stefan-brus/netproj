@@ -52,5 +52,6 @@ class FileLogger : ILogger
     body
     {
         this.log_file.writefln("[%s] " ~ str, curTimeStr(), args);
+        this.log_file.flush();
     }
 }
